@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+ <ui:composition template="/templates/base-layout.xhtml">
+    <ui:define name="main-content">
+    <main>
+ 
+<body>
+   <center>
+    <body style="background-color:FloralWhite;">
+    <br/>
+   
+     <c:choose style="background-color:FloralWhite;"> 
+                <c:when test="#{session.getAttribute('username') != null}">
+                 <h2>Hello #{session.getAttribute('username')}</h2>
+                <h:form id="form">
+		<h:panelGrid columnClasses="acent">
+			<rich:extendedDataTable sortMode="single" value="#{pacBean.packages}"
+				var="pac" id="table"
+				noDataLabel="Няма намерени записи по зададените критерии">
+				<rich:column>
+					<f:facet name="header">Id</f:facet>    				
+               #{(pacBean.packages.indexOf(pac) + 1) + ((pacBean.currentPage -1) * 20)}
+            </rich:column>
+				<rich:column style="background-color:LightGray;">
+					<f:facet name="header">Recipient Name</f:facet>
+               #{pac.recipient}
+            </rich:column>
+            <rich:column >
+					<f:facet name="header">Sender</f:facet>
+               #{pac.userPanda.userName}
+            </rich:column>
+				<rich:column style="background-color:LightGray;">
+					<f:facet name="header">Title</f:facet>
+               #{pac.title}
+            </rich:column>
+				<rich:column>
+					<f:facet name="header">Description</f:facet>
+               #{pac.description}
+            </rich:column>
+				<rich:column style="background-color:LightGray;">
+					<f:facet name="header">Weight</f:facet>
+               #{pac.weight} kg
+            </rich:column>
+           
+				<rich:column>
+					<f:facet name="header">Estimate Delivered</f:facet>
+               #{pac.estimatedDeliveryTime}
+            </rich:column>
+				<rich:column style="background-color:LightGray;" >
+					<f:facet name="header">Municipality</f:facet>
+               #{pac.shippingAddress.city.municipality.municipalityName}
+            </rich:column>
+				<rich:column>
+					<f:facet name="header">City</f:facet>
+               #{pac.shippingAddress.city.cityName}
+            </rich:column>
+				<rich:column style="background-color:LightGray;" >
+					<f:facet name="header">Street</f:facet>
+               #{pac.shippingAddress.street}
+            </rich:column>
+				<rich:column>
+					<f:facet name="header">Street Number</f:facet>
+               #{pac.shippingAddress.numberOfStreet}
+            </rich:column>
+           <rich:column style="background-color:LightGray;" >
+					<f:facet name="header">Status</f:facet>
+               #{pac.status}
+            </rich:column>
+            <c:choose>
+             <c:when test="#{session.getAttribute('role') == 'Manager'}">
+              <rich:column>
+					<f:facet name="header">
+						<a4j:commandButton value="Добавяне" action="receipt?faces-redirect=true"
+							oncomplete="#{rich:component('popup')}.show()" render="popup" />
+					</f:facet>
+					<a4j:commandButton value="Редакция" action="#{pacBean.edit(pac)}"
+						oncomplete="#{rich:component('popup')}.show()" render="popup" />
+				</rich:column>
+              </c:when>
+               </c:choose>
+				
+			</rich:extendedDataTable>
+		</h:panelGrid>
+		<h:commandButton value="&lt;&lt;" action="#{pacBean.firstPage}"
+			disabled="#{pacBean.currentPage == 1}" />
+		<h:commandButton value="&lt;" action="#{pacBean.prevPage}"
+			disabled="#{pacBean.currentPage == 1}" />
+		<h:commandButton value="&gt;" action="#{pacBean.nextPage}"
+			disabled="#{pacBean.nextPageDisabled}" />
+		<h:commandButton value="&gt;&gt;" action="#{pacBean.lastPage}"
+			disabled="#{pacBean.nextPageDisabled}" />
+		<a4j:commandButton value="Search"
+			oncomplete="#{rich:component('pop')}.show()" render="pop"
+			action="#{pacBean.clearObject}"/>
+		<h:commandButton value="Select All" action="#{pacBean.sellectAllPackage}" />
+	</h:form>
+	
+	<rich:popupPanel id="pop" modal="true" autosized="true"
+		resizeable="false" header="Simple popup panel">
+		<h:form>
+			<h:panelGrid columns="1">
+
+				<h:outputText value="Write Title!" />
+				<h:inputText value="#{pacBean.editObject.title}" />
+				
+				<h:outputText value="Write Recipient!" />
+				<h:inputText value="#{pacBean.editObject.recipient}" />
+				
+				<h:outputText value="Write Weight!" />
+				<h:inputText value="#{pacBean.editObject.weight}" />
+				
+				<h:outputText value="Write Status!" />
+				<h:inputText value="#{pacBean.editObject.status}" />
+				
+				<h:outputText value="Write Sender Name!" />
+				<h:inputText value="#{pacBean.sender}" />
+				
+				<h:outputText value="Write City name!" />
+				<h:inputText value="#{pacBean.cityName}" />
+				
+				<h:outputText value="Write Street name!" />
+				<h:inputText value="#{pacBean.streetName}" />
+				
+				<h:outputText value="Write Street number!" />
+				<h:inputText value="#{pacBean.streetNumber}" />
+				
+				
+
+			</h:panelGrid>
+			<a4j:commandButton value="Search" action="#{pacBean.searchPackage}"
+				oncomplete="#{rich:component('pop')}.hide()" render="table" />
+			<a4j:commandButton value="Отказ"
+				onclick="#{rich:component('pop')}.hide()" immediate="true" />
+		</h:form>
+	</rich:popupPanel>
+	
+	<rich:popupPanel id="popup" modal="true" autosized="true"
+		resizeable="false" header="Simple popup panel">
+		<h:form>
+			<h:panelGrid columns="2">
+				<h:outputText value="Write Recipient Name!" />
+				<h:inputText value="#{pacBean.editObject.recipient}" />
+				<h:outputText value="Write Title!" />
+				<h:inputText value="#{pacBean.editObject.title}" />
+				<h:outputText value="Write Description!" />
+				<h:inputText value="#{pacBean.editObject.description}" />
+				
+				<h:outputText value="Write Weight!" />
+				<h:inputText value="#{pacBean.editObject.weight}" />
+				
+				<h:outputText value="Write Status!" />
+				<h:inputText value="#{pacBean.editObject.status}" />
+				
+				
+				
+				<h:outputLabel value="Estimated delivery time:" />
+				<rich:calendar id="start_date"
+                    datePattern="dd/MM/yyyy"
+                    inputClass="dateField"
+                    value="#{pacBean.editObject.estimatedDeliveryTime}"
+                    required="true"
+                    enableManualInput="true"
+                    showFooter="false"
+                    showWeekDaysBar="false"
+                    styleClass="rich-calendar-month-year-only"
+                    oncurrentdateselected="event.rich.component.selectDate(event.rich.date)" />
+				
+
+				<h:outputText value=" Select Municipality city!" />
+				<h:selectOneMenu value="#{pBean.municipalityId}">
+					<a4j:ajax listener="#{pBean.onMunicipalityChange}"
+						render="city, municipality, street, number" />
+					<f:selectItem itemLabel="Select Municipality" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{cBean.municipalities}" var="municipality"
+						itemLabel="#{municipality.municipalityName}"
+						itemValue="#{municipality.id}" />
+                </h:selectOneMenu>
+                
+				<h:outputLabel for="city" value="City: " />
+				<h:selectOneMenu id="city" value="#{pBean.cityId}"
+					disabled="#{pBean.municipalityId==null}">
+					<a4j:ajax listener="#{pBean.onCityChange}" render="street, number" />
+					<f:selectItem itemLabel="Select City" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pBean.cities}" var="city"
+						itemLabel="#{city.cityName}" itemValue="#{city.id}" />
+				</h:selectOneMenu>
+
+				<h:outputLabel for="street" value="Street: " />
+				<h:selectOneMenu id="street" value="#{pBean.street}"
+					disabled="#{pBean.cityId==null}">
+					<a4j:ajax listener="#{pBean.onStreetChange}" render="number" />
+					<f:selectItem itemLabel="Select Street" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pBean.streets}" var="street"
+						itemLabel="#{street}" itemValue="#{street}" />
+				</h:selectOneMenu>
+
+				<h:outputLabel for="number" value="Number: " />
+				<h:selectOneMenu id="number" value="#{pBean.numberOfStreet}"
+					disabled="#{pBean.street==null}">
+					<f:selectItem itemLabel="Select Number" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pBean.streetsNumbers}" var="number"
+						itemLabel="#{number}" itemValue="#{number}" />
+				</h:selectOneMenu>
+
+				
+			</h:panelGrid>
+			<a4j:commandButton value="Запис" action="#{pBean.changePackage}"
+				oncomplete="#{rich:component('popup')}.hide()" render="table" />
+			<a4j:commandButton value="Отказ" action="#{pBean.clearCollection}"
+				onclick="#{rich:component('popup')}.hide()" immediate="true" />
+		</h:form>
+	</rich:popupPanel>
+    </c:when>
+                <c:otherwise>
+                    
+                    <h:body style="background-color:FloralWhite;">
+        
+	           </h:body>
+	        
+                </c:otherwise>
+            </c:choose>
+    </body>
+    </center>
+</body> 
+</main>
+    </ui:define>
+</ui:composition>
+</html>

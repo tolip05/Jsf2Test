@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core" >
+ 
+    <h:body>
+       
+        
+        <h:form>
+            
+            
+             Select kind city!
+            <br/>
+            <h:selectOneMenu value="#{addCity.kindCity}">
+                <f:selectItems value="#{addCity.kindCities}" var="c"
+                                          />
+            </h:selectOneMenu>
+            
+            <br/>
+            
+            Select Municipality city!
+            <br/>
+            <h:selectOneMenu value="#{addCity.municipalityId}">
+                <f:selectItems value="#{addCity.municipalityIds}" var="b"
+                                          />
+            </h:selectOneMenu>
+            <br/>
+            Add City name!
+            <br/>
+            <h:inputText value="#{addCity.cityName}" /><br/>
+            <br/>
+            <h:commandButton value="Submit" action="#{addCity.addCityIntoDb}"></h:commandButton>
+        </h:form>
+    </h:body>
+</html>

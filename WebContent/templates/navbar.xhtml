@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      <h:head></h:head> 
+    
+   <h:body> 
+      <h:form> 
+         <rich:toolbar  height="36px">   
+         <c:choose>
+            <c:when test="#{session.getAttribute('role') == 'Manager'}">
+              
+            <a4j:commandLink action="addresses?faces-redirect=true" value="Add Address" styleClass="alignRight"/>
+            <a4j:commandLink action="receipt?faces-redirect=true" value="Receipts" />
+            </c:when>
+             </c:choose>
+         <c:choose>
+             <c:when test="#{session.getAttribute('username') == null}">
+              <a4j:commandLink action="pandalogin?faces-redirect=true" value="Login" styleClass="alignRight"/>
+              <a4j:commandLink action="registerpanda?faces-redirect=true" value="Register" styleClass="alignRight"/>
+              </c:when>
+               <c:otherwise>
+              
+            
+            <a4j:commandLink action="#{pacBean.goTo(1)}" value="All-Recepts" />
+            <a4j:commandLink action="#{uPBean.logout}" value="Logout"/>  
+               
+               </c:otherwise>
+                    </c:choose>
+         </rich:toolbar>   
+      </h:form> 
+   </h:body> 
+   
+</html>

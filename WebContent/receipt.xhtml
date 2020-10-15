@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+
+<ui:composition template="/templates/base-layout.xhtml">
+    <ui:define name="main-content">
+    <main> 
+    <c:choose>
+            <c:when test="#{session.getAttribute('role') == 'Manager'}">
+<center>
+<body>
+<rich:panel header="Prepare package">
+
+<h:form>
+            <h:panelGrid columns="2">
+           <h:outputText value=" Select Municipality city!" />
+				<h:selectOneMenu value="#{pBean.municipalityId}">
+					<a4j:ajax listener="#{pBean.onMunicipalityChange}"
+						render="city, municipality, street, number" />
+					<f:selectItem itemLabel="Select Municipality" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{cBean.municipalities}" var="municipality"
+						itemLabel="#{municipality.municipalityName}"
+						itemValue="#{municipality.id}" />
+                </h:selectOneMenu>
+                
+				<h:outputLabel for="city" value="City: " />
+				<h:selectOneMenu id="city" value="#{pBean.cityId}"
+					disabled="#{pBean.municipalityId==null}">
+					<a4j:ajax listener="#{pBean.onCityChange}" render="street, number" />
+					<f:selectItem itemLabel="Select City" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pBean.cities}" var="city"
+						itemLabel="#{city.cityName}" itemValue="#{city.id}" />
+				</h:selectOneMenu>
+
+				<h:outputLabel for="street" value="Street: " />
+				<h:selectOneMenu id="street" value="#{pBean.street}"
+					disabled="#{pBean.cityId==null}">
+					<a4j:ajax listener="#{pBean.onStreetChange}" render="number" />
+					<f:selectItem itemLabel="Select Street" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pBean.streets}" var="street"
+						itemLabel="#{street}" itemValue="#{street}" />
+				</h:selectOneMenu>
+
+				<h:outputLabel for="number" value="Number: " />
+				<h:selectOneMenu id="number" value="#{pBean.numberOfStreet}"
+					disabled="#{pBean.street==null}">
+					<f:selectItem itemLabel="Select Number" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{pBean.streetsNumbers}" var="number"
+						itemLabel="#{number}" itemValue="#{number}" />
+				</h:selectOneMenu>
+			<h:outputText value="Recipient:" />
+            <h:inputText value="#{pacBean.editObject.recipient}" />
+            
+			<h:outputText value="Title:" />
+            <h:inputText value="#{pacBean.editObject.title}" />
+            
+            <h:outputText value="Description:" />
+            <h:inputText value="#{pacBean.editObject.description}" />
+            
+            <h:outputText value="Weight:" />
+            <h:inputText value="#{pacBean.editObject.weight}" />
+            
+            <h:outputText value="Status:" />
+            <h:inputText value="#{pacBean.editObject.status}" />
+            
+            <h:outputText value="Email:" />
+            <h:inputText value="#{pacBean.userEmail}" />
+            
+            <h:outputLabel value="Estimated delivery time:" />
+            
+            <rich:calendar id="start_date"
+                    datePattern="dd/MM/yyyy"
+                    inputClass="dateField"
+                    value="#{pacBean.editObject.estimatedDeliveryTime}"
+                    required="true"
+                    enableManualInput="true"
+                    showFooter="false"
+                    showWeekDaysBar="false"
+                    styleClass="rich-calendar-month-year-only"
+                    oncurrentdateselected="event.rich.component.selectDate(event.rich.date)" />
+
+ 
+				</h:panelGrid>
+				<a4j:commandButton value="Save" action="#{pBean.start}" />
+            </h:form>
+        
+        
+    </rich:panel>
+    </body>
+    </center>
+    </c:when>
+             </c:choose>
+</main>
+    </ui:define>
+</ui:composition>
+    
+ 
+</html>

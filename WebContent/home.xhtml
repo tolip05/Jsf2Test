@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"> 
+    <ui:composition template="/templates/base-layout.xhtml">
+    <ui:define name="main-content">
+    <main>
+ 
+<body>
+   <center>
+    <body style="background-color:FloralWhite;">
+    <br/>
+   
+     <c:choose style="background-color:FloralWhite;"> 
+                <c:when test="#{session.getAttribute('username') != null}">
+                 <h2>Hello #{session.getAttribute('username')}</h2>
+                <h:form id="form">
+        
+ 
+        
+ 
+    </h:form>
+               
+    
+    </c:when>
+                <c:otherwise>
+                    
+                    <h:body style="background-color:FloralWhite;">
+         <center>
+        
+                       
+         </center>
+	           </h:body>
+	        
+                </c:otherwise>
+            </c:choose>
+    
+   
+    
+    </body>
+    </center>
+</body> 
+</main>
+    </ui:define>
+</ui:composition>
+</html>

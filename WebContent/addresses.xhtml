@@ -1,0 +1,142 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="/templates/base-layout.xhtml">
+    <ui:define name="main-content">
+    <main>
+                   <center>
+                    <c:choose>
+            <c:when test="#{session.getAttribute('role') == 'Manager'}">
+            
+	<h2>DataTable Addresses</h2>
+	<h:form id="form">
+		<h:panelGrid columnClasses="acent">
+			<rich:extendedDataTable sortMode="single" value="#{aBean.addresses}" var="address" id="table"
+				noDataLabel="Няма намерени записи по зададените критерии">
+				rich:column>
+				<rich:column sortable="true" sortBy="#{address.id}">
+					<f:facet name="header">Id</f:facet>    				
+               #{(aBean.addresses.indexOf(address) + 1) + ((aBean.currentPage -1) * 20)}
+            </rich:column>
+              <rich:column style="background-color:LightGray;" sortable="true" sortBy="#{address.city.municipality.municipalityName}">
+					<f:facet name="header">Municipality Name</f:facet>
+               #{address.city.municipality.municipalityName}
+            </rich:column>
+				<rich:column sortable="true" sortBy="#{address.city.cityName}">
+					<f:facet name="header">City Name</f:facet>
+               #{address.city.cityName}
+            </rich:column>
+
+				<rich:column style="background-color:LightGray;">
+					<f:facet name="header">Street</f:facet>
+               #{address.street}
+            </rich:column>
+				<rich:column>
+					<f:facet name="header">Street Number</f:facet>
+               #{address.numberOfStreet}
+            </rich:column>
+				
+				
+				<rich:column>
+					<f:facet name="header">
+						<a4j:commandButton value="Добавяне" action="#{aBean.addAddress}"
+							oncomplete="#{rich:component('popup')}.show()" render="popup" />
+					</f:facet>
+					<a4j:commandButton value="Редакция"
+						action="#{aBean.edit(address)}"
+						oncomplete="#{rich:component('popup')}.show()" render="popup" />
+				</rich:column>
+			</rich:extendedDataTable>
+			</h:panelGrid>
+			<h:commandButton value="&lt;&lt;" action="#{aBean.firstPage}"
+			disabled="#{aBean.currentPage == 1}" />
+		<h:commandButton value="&lt;" action="#{aBean.prevPage}"
+			disabled="#{aBean.currentPage == 1}" />
+		<h:commandButton value="&gt;" action="#{aBean.nextPage}"
+			disabled="#{aBean.nextPageDisabled}" />
+		<h:commandButton value="&gt;&gt;" action="#{aBean.lastPage}"
+			disabled="#{aBean.nextPageDisabled}" />
+		<a4j:commandButton value="Search"
+			oncomplete="#{rich:component('pop')}.show()" render="pop" action="#{aBean.clearFilters}" />
+			
+		<h:commandButton value="Select All" 
+		action="#{aBean.selectAll}" />
+		
+		
+	    <h:commandButton action="municipalities?faces-redirect=true" value="Municipality" />
+	</h:form>
+	
+   
+        
+	<rich:popupPanel id="popup" modal="true" autosized="true"
+		resizeable="false" header="Simple popup panel">
+		<h:form>
+			<h:panelGrid columns="1">
+				<h:outputText value=" Select Municipality city!" />
+				<h:selectOneMenu value="#{aBean.municipalityId}">
+					<a4j:ajax listener="#{aBean.onMunicipalityChange}"
+						render="city" />
+					<f:selectItem itemLabel="Select Municipality" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{aBean.municipalities}" var="municipality"
+						itemLabel="#{municipality.municipalityName}"
+						itemValue="#{municipality.id}"/>
+                </h:selectOneMenu>
+                
+				<h:outputLabel for="city" value="City: " />
+				<h:selectOneMenu id="city" value="#{aBean.cityId}"
+					disabled="#{aBean.municipalityId==null}">
+					<f:selectItem itemLabel="Select City" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItems value="#{aBean.cities}" var="city"
+						itemLabel="#{city.cityName}" itemValue="#{city.id}" />
+				</h:selectOneMenu>
+				
+				<h:outputText value="Write street name!" />
+				<h:inputText value="#{aBean.street}" />
+				<h:outputText value="Write street number!" />
+				<h:inputText value="#{aBean.numberOfStreet}" />
+			</h:panelGrid>
+			<a4j:commandButton value="Запис" action="#{aBean.save()}"
+				oncomplete="#{rich:component('popup')}.hide()" />
+			<a4j:commandButton value="Отказ" action="#{aBean.clearCollection}"
+				onclick="#{rich:component('popup')}.hide()" immediate="true" />
+		</h:form>
+	</rich:popupPanel>
+<rich:popupPanel id="pop" modal="true" autosized="true"
+		resizeable="false" header="Simple popup panel">
+		<h:form>
+			<h:panelGrid columns="2">
+				<h:outputText value="Write City name!" />
+				<h:inputText value="#{aBean.searchName}" />
+				
+				<h:outputText value="Write Street name!" />
+				<h:inputText value="#{aBean.street}" />
+				
+				<h:outputText value="Write Street number!" />
+				<h:inputText value="#{aBean.numberOfStreet}" />
+			</h:panelGrid>
+			<a4j:commandButton value="Търси"
+				action="#{aBean.searchCytiByName}"
+				oncomplete="#{rich:component('pop')}.hide()" render="table"  />
+			<a4j:commandButton value="Отказ"
+				onclick="#{rich:component('pop')}.hide()" immediate="true" />
+		</h:form>
+	</rich:popupPanel>
+	</c:when>
+             </c:choose>
+	</center>
+	
+           </main>
+    </ui:define>
+</ui:composition>    
+</html>

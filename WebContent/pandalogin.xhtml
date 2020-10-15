@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:h="http://java.sun.com/jsf/html"> 
+
+<ui:composition template="/templates/base-layout.xhtml">
+    <ui:define name="main-content">
+    <main>
+
+   <center>
+    <body style="background-color:FloralWhite;">
+    
+    <h:form id="form">
+        <rich:panel>
+            <f:facet name="header">
+                <h:panelGroup>
+                    <h:outputText value="User login" />
+                    <a4j:status>
+                        <f:facet name="start">
+                            <h:graphicImage value="/images/ai.gif" style="height:12px;width:12px;" alt="ai" />
+                        </f:facet>
+                    </a4j:status>
+                </h:panelGroup>
+            </f:facet>
+            <h:panelGrid columns="3">
+                
+                <h:outputText value="Email" />
+                <h:inputText value="#{uPBean.email}" id="email" validatorMessage="Validation Error: Invalid email address">
+                    <f:validateRegex
+                        pattern="^(([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([;.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$" />
+                    <rich:validator />
+                </h:inputText>
+                <rich:message for="email" />
+                <h:outputText value="Password" />
+                <h:inputSecret value="#{uPBean.password}" id="password" label="password">
+                    <rich:validator />
+                </h:inputSecret>
+                
+          
+            </h:panelGrid>
+             
+			 <h:panelGrid columns="1">
+            <a4j:commandButton value="Login" action="#{uPBean.loginUser}"/>
+            </h:panelGrid>
+        </rich:panel>
+    </h:form>
+   
+   
+   
+    
+    </body>
+    </center>
+</main>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,123 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+    <ui:composition template="/templates/base-layout.xhtml">
+    <ui:define name="main-content">
+    <main>
+     <c:choose>
+            <c:when test="#{session.getAttribute('role') == 'Manager'}">
+            <h:body style="background-color:FloralWhite;">
+                 <center>
+	<h2>DataTable Municipality and City</h2>
+	<h:form id="form">
+		<h:panelGrid columnClasses="acent">
+			<rich:extendedDataTable sortMode="single" value="#{cBean.cities}" var="city" id="table"
+				noDataLabel="Няма намерени записи по зададените критерии">
+				<rich:column sortable="true" sortBy="#{city.id}">
+					<f:facet name="header">Id</f:facet>    				
+               #{(cBean.cities.indexOf(city) + 1) + ((cBean.currentPage -1) * 20)}
+            </rich:column>
+
+				<rich:column style="background-color:LightGray;" sortable="true" sortBy="#{city.cityName}">
+					<f:facet name="header">Name</f:facet>
+               #{city.cityName}
+            </rich:column>
+
+				<rich:column>
+					<f:facet name="header">KindCity</f:facet>
+               #{city.kindCity}
+            </rich:column>
+				<rich:column style="background-color:LightGray;" sortable="true" sortBy="#{city.municipality.municipalityName}">
+					<f:facet name="header">Municipality</f:facet>
+               #{city.municipality.municipalityName}
+            </rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<a4j:commandButton value="Добавяне" action="#{cBean.add}"
+							oncomplete="#{rich:component('popup')}.show()" render="popup" />
+					</f:facet>
+					<a4j:commandButton value="Редакция"
+						action="#{cBean.edit(city)}"
+						oncomplete="#{rich:component('popup')}.show()" render="popup" />
+				</rich:column>
+			</rich:extendedDataTable>
+		</h:panelGrid>
+
+		<h:commandButton value="&lt;&lt;" action="#{cBean.firstPage}"
+			disabled="#{cBean.currentPage == 1}" />
+		<h:commandButton value="&lt;" action="#{cBean.prevPage}"
+			disabled="#{cBean.currentPage == 1}" />
+		<h:commandButton value="&gt;" action="#{cBean.nextPage}"
+			disabled="#{cBean.nextPageDisabled}" />
+		<h:commandButton value="&gt;&gt;" action="#{cBean.lastPage}"
+			disabled="#{cBean.nextPageDisabled}" />
+		<a4j:commandButton value="Search"
+			oncomplete="#{rich:component('pop')}.show()" render="pop" action="#{cBean.clearFilters}" />
+		 <h:commandButton value="Select All" action="#{cBean.selectAll}" />
+		 <h:commandButton action="addresses?faces-redirect=true" value="Addresses" />
+	</h:form>
+
+	<rich:popupPanel id="popup" modal="true" autosized="true"
+		resizeable="false" header="Simple popup panel">
+		<h:form>
+			<h:panelGrid columns="1">
+				<h:outputText value="Select kind city!" />
+				<h:selectOneMenu value="#{cBean.editObject.kindCity}">
+					<f:selectItem itemLabel="с." itemValue="1" />
+					<f:selectItem itemLabel="гр." itemValue="2" />
+				</h:selectOneMenu>
+				<h:outputText value=" Select Municipality city!" />
+				<h:selectOneMenu value="#{cBean.editObject.municipality.id}">
+					<f:selectItems value="#{cBean.municipalities}"
+						var="municipality" itemLabel="#{municipality.municipalityName}"
+						itemValue="#{municipality.id}" />
+				</h:selectOneMenu>
+				<h:outputText value="Add City name!" />
+				<h:inputText value="#{cBean.editObject.cityName}" />
+			</h:panelGrid>
+			<a4j:commandButton value="Запис" action="#{cBean.save}"
+				oncomplete="#{rich:component('popup')}.hide()" />
+			<a4j:commandButton value="Отказ"
+				onclick="#{rich:component('popup')}.hide()" immediate="true" />
+		</h:form>
+	</rich:popupPanel>
+
+	<rich:popupPanel id="pop" modal="true" autosized="true"
+		resizeable="false" header="Simple popup panel">
+		<h:form>
+			<h:panelGrid columns="2">
+				<h:outputText value="Write City name!" />
+				<h:inputText value="#{cBean.searchName}" />
+				<h:outputText value="Вид населено място" />
+				<h:selectOneMenu value="#{cBean.selectedKindCityFilter}">
+					<f:selectItem itemLabel="----" itemValue="0" />
+					<f:selectItem itemLabel="с." itemValue="1" />
+					<f:selectItem itemLabel="гр." itemValue="2" />
+				</h:selectOneMenu>
+				<h:outputText value="Write Municipality name!" />
+				<h:inputText value="#{cBean.municipalityName}" />
+			</h:panelGrid>
+			<a4j:commandButton value="Търси"
+				action="#{cBean.searchCytiByName()}"
+				oncomplete="#{rich:component('pop')}.hide()" render="table"  />
+			<a4j:commandButton value="Отказ"
+				onclick="#{rich:component('pop')}.hide()" immediate="true" />
+		</h:form>
+	</rich:popupPanel>
+	</center>
+</h:body>
+               </c:when>
+             </c:choose>
+ </main>
+    </ui:define>
+</ui:composition> 
+</html>
